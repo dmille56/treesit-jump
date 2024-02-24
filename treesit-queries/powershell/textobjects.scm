@@ -7,8 +7,15 @@
 (comment) @comment.inner
 (comment) @comment.outer
 
-;; :TODO: add conditional support
-;; :TODO: add loop support
+(if_statement "if" (_) (statement_block (_)) @conditional.inner) @conditional.outer
+(else_clause "else" (_) @conditional.inner) @conditional.outer
+(elseif_clause "elseif" (_) (statement_block (_)) @conditional.inner) @conditional.outer
+
+(foreach_statement "foreach" (_) (statement_block (_)) @loop.inner) @loop.outer
+(for_statement "for" (_) (statement_block (_)) @loop.inner) @loop.outer
+(while_statement "while" (_) (statement_block (_)) @loop.inner) @loop.outer
+(do_statement "do" (statement_block (_)) @loop.inner) @loop.outer
+
 ;; :TODO: add parameter support
 
 ;; Examples from python:

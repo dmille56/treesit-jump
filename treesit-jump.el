@@ -140,7 +140,7 @@
 (defun treesit-jump-test-scm-queries ()
   (interactive)
   (let* (
-        (query (treesit-jump--get-query "python" "~/dotfiles/emacs-config/treesit-queries/" t))
+        (query (treesit-jump--get-query "powershell" "~/Desktop/prog/treesit-jump/treesit-queries/" t))
         )
     (treesit-jump-query-select-go-to (list query))
     ;; (treesit-jump-query-select-visual (list query))

@@ -24,49 +24,28 @@
 (require 'avy)
 (require 'cl-lib)
 
-(defgroup treesit-jump-mode nil
-  "Customize group for treesit-jump-mode.el."
+(defgroup treesit-jump nil
+  "Customize group for treesit-jump.el."
   :group 'emacs)
-
-(defcustom treesit-jump-queries '("(comment) @comment" "(function_statement) @func" "(if_statement) @if" "(else_clause) @else" "(elseif_clause) @elseif" "(class_statement) @class" "(param_block) @param" "(for_statement) @for" "(while_statement) @while" "(do_statement) @do" "(class_method_definition) @classmeth" "(foreach_statement) @for" "(try_statement) @try" "(catch_clause) @catch" "(finally_clause) @finally")
-  "Queries to search for."
-  :type '(repeat string)
-  :group 'treesit-jump-mode)
 
 (defcustom treesit-jump-queries-filter-list '("inner" "test" "param")
   "Query captures to filter out of results uses regex."
   :type '(repeat string)
-  :group 'treesit-jump-mode)
+  :group 'treesit-jump)
 
 (defcustom treesit-jump-queries-filter-func #'treesit-jump-queries-filter-default-func
   "Function used to filter matched treesit queries."
   :type 'function
-  :group 'treesit-jump-mode)
+  :group 'treesit-jump)
 
 (defcustom treesit-jump-positions-filter-func #'avy-process
   "Function used to select matched treesit queries on screen."
   :type 'function
-  :group 'treesit-jump-mode)
-
-;; (defcustom treesit-jump-queries-dir (file-name-as-directory (concat (file-name-directory buffer-file-name) "treesit-queries"))
-;;   "Directory containing the treesit queries."
-;;   :type 'string
-;;   :group 'treesit-jump-mode)
-
-;; (defcustom treesit-jump-queries-dir (file-name-as-directory (concat "~/Desktop/prog/treesit-jump/" "treesit-queries"))
-;;   "Directory containing the treesit queries."
-;;   :type 'string
-;;   :group 'treesit-jump-mode)
-
-(setq treesit-jump-queries-dir (funcall (lambda ()
-                                          (file-name-as-directory
-                                           (concat (file-name-directory
-                                                    (or load-file-name buffer-file-name (symbol-file 'treesit-jump-queries-dir)))
-                                                   "treesit-queries")))))
+  :group 'treesit-jump)
 
 (defcustom treesit-jump-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
-  :group 'treesit-jump-mode
+  :group 'treesit-jump
   :type '(alist :key-type symbol
                 :value-type string))
 (pcase-dolist (`(,major-mode . ,lang-symbol)
@@ -100,6 +79,7 @@
                           (matlab-mode . "matlab")
                           (php-mode . "php")
                           (php-ts-mode . "php")
+                          (powershell-mode . "powershell")
                           (powershell-ts-mode . "powershell")
                           (prisma-mode . "prisma")
                           (prisma-ts-mode . "prisma")
@@ -120,6 +100,12 @@
                           (zig-mode . "zig"))))
   (setf (map-elt treesit-jump-major-mode-language-alist
                  major-mode) lang-symbol))
+
+(setq treesit-jump-queries-dir (funcall (lambda ()
+                                          (file-name-as-directory
+                                           (concat (file-name-directory
+                                                    (or load-file-name buffer-file-name (symbol-file 'treesit-jump-queries-dir)))
+                                                   "treesit-queries")))))
 
 (defun treesit-jump-queries-filter-default-func (query)
   (let* (
@@ -181,12 +167,6 @@
     (when (and start end)
       (delete-region start end))))
 
-(defun treesit-jump-avy-jump ()
-  (interactive)
-  ;; (treesit-jump-query-select-go-to treesit-jump-python-queries)
-  (treesit-jump-query-select-visual treesit-jump-python-queries)
-)
-
 (defun treesit-jump--get-inherits-line (filename)
   "Get the inherits line from `FILENAME'.
 It might not be on the fist line and so we cannot just get the first line."
@@ -237,8 +217,6 @@ It might not be on the fist line and so we cannot just get the first line."
     ))
 
 ;; :TODO: remove this global set-key
-;; (global-set-key (kbd "<f9>") 'treesit-jump-avy-jump)
-;; 
 (global-set-key (kbd "<f9>") 'treesit-jump-test-scm-queries)
 
 (provide 'treesit-jump)

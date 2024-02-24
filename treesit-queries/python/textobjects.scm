@@ -19,8 +19,7 @@
 
 ((function_definition
    name: (identifier) @_name
-   body: (block)? @test.inner) @test.outer
- (#match "^test_" @_name))
+   body: (block)? @test.inner) @test.outer)
 
 (for_statement
  body: (_) @loop.inner) @loop.outer

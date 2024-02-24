@@ -17,6 +17,11 @@
 (switch_statement "switch" (_) (switch_body (_)) @conditional.inner) @conditional.outer
 (switch_clause (_) (statement_block (_)) @conditional.inner) @conditional.outer
 
+;; adding try/catch/finally to conditionals (even though they are technically not)
+(try_statement (_) @conditional.inner) @conditional.outer
+(catch_clause (_) @condtional.inner) @conditional.outer
+(finally_clause (_) @conditional.inner) @conditional.outer
+
 ;; Loops
 (foreach_statement "foreach" (_) (statement_block (_)) @loop.inner) @loop.outer
 (for_statement "for" (_) (statement_block (_)) @loop.inner) @loop.outer
@@ -26,5 +31,4 @@
 ;; Parameters
 ;; :TODO: add parameter support
 
-;; :TODO: add support for try/catch/finally
 ;; :TODO: add support for begin/process/end

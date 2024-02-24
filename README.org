@@ -1,0 +1,9 @@
+* Treesit-Jump
+Jump around your source code using treesit and avy
+
+Example config:
+#+BEGIN_SRC emacs-lisp
+(use-package treesit-jump
+  :straight (:host github :repo "dmille56/treesit-jump")
+  )
+#+END_SRC

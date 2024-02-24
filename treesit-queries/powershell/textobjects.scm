@@ -14,6 +14,8 @@
 (if_statement "if" (_) (statement_block (_)) @conditional.inner) @conditional.outer
 (else_clause "else" (_) @conditional.inner) @conditional.outer
 (elseif_clause "elseif" (_) (statement_block (_)) @conditional.inner) @conditional.outer
+(switch_statement "switch" (_) (switch_body (_)) @conditional.inner) @conditional.outer
+(switch_clause (_) (statement_block (_)) @conditional.inner) @conditional.outer
 
 ;; Loops
 (foreach_statement "foreach" (_) (statement_block (_)) @loop.inner) @loop.outer

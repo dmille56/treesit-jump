@@ -11,7 +11,7 @@
 ;; :TODO: add jumping between parents of the node under your cursor
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add documentation for each function
-;; :TODO: add override queries for each language
+;; :TODO: test override queries for each language
 ;; :TODO: add compiled queries using treesit-query-compile for faster searching
 
 ;; Useful links:
@@ -42,6 +42,11 @@
   "Function used to select matched treesit queries on screen."
   :type 'function
   :group 'treesit-jump)
+
+(defcustom treesit-jump-queries-extra-alist nil
+  "Alist that maps major modes to extra queries to search for."
+  :group 'treesit-jump
+  :type '(alist :key-type (symbol) :value-type '(repeat string)))
 
 (defcustom treesit-jump-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
@@ -217,12 +222,8 @@ It might not be on the fist line and so we cannot just get the first line."
         (progn 
           (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
           (puthash language query-res treesit-jump-queries-cache)
-          query-res
-          )
-      cache-res
-      )
-    )
-  )
+          query-res)
+      cache-res)))
 
 (defun treesit-jump-get-and-process-captures (query-process-func)
   (interactive)
@@ -230,7 +231,8 @@ It might not be on the fist line and so we cannot just get the first line."
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
         (queries-dir treesit-jump-queries-dir)
         (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
-        (queries-list (list query))
+        (extra-queries (alist-get major-mode treesit-jump-queries-extra-alist))
+        (queries-list (append (list query) extra-queries))
         )
     (funcall query-process-func queries-list)
     ))

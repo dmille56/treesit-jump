@@ -50,7 +50,7 @@
 (arguments
   positional: (positional_args
                 ((_) @parameter.inner . ","? @parameter.outer)? @parameter.outer)
-  ; TODO: get named args right
+  ; :TODO: get named args right
   named: (named_args ((_) @parameter.inner . ","? @parameter.outer)? @parameter.outer)
 )
 

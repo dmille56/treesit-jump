@@ -9,6 +9,8 @@ Example config:
 #+END_SRC
 
 Jump to match: treesit-jump-jump
+
 Select match: treesit-jump-select
+
 Delete match: treesit-jump-delete
 

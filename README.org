@@ -1,16 +1,20 @@
-* Treesit-Jump
-Jump around your source code using treesit and avy
+* About
+Treesit-jump: jump around your source code using emacs, treesit, and avy.
 
-Example config:
+* Table of Contents                                                     :TOC:
+- [[#about][About]]
+- [[#installation][Installation]]
+- [[#useful-functions][Useful functions]]
+
+* Installation
 #+BEGIN_SRC emacs-lisp
 (use-package treesit-jump
   :straight (:host github :repo "dmille56/treesit-jump")
   )
 #+END_SRC
 
-Jump to match: treesit-jump-jump
-
-Select match: treesit-jump-select
-
-Delete match: treesit-jump-delete
+* Useful functions
+- Jump to match: treesit-jump-jump
+- Select match: treesit-jump-select
+- Delete match: treesit-jump-delete
 

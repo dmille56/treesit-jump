@@ -12,7 +12,6 @@
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add documentation for each function
 ;; :TODO: add override queries for each language
-;; :TODO: add caching of loaded queries (so that queries aren't needed to be read from disk everytime they are run)
 ;; :TODO: add compiled queries using treesit-query-compile for faster searching
 
 ;; Useful links:
@@ -107,6 +106,11 @@
                                            (concat (file-name-directory
                                                     (or load-file-name buffer-file-name (symbol-file 'treesit-jump-queries-dir)))
                                                    "treesit-queries")))))
+
+(setq treesit-jump-queries-cache (make-hash-table :test 'equal))
+
+(defun treesit-jump-queries-clear-cache ()
+  (setq treesit-jump-queries-cache (make-hash-table :test 'equal)))
 
 (defun treesit-jump-queries-filter-default-func (query)
   (let* (
@@ -204,12 +208,28 @@ It might not be on the fist line and so we cannot just get the first line."
                                        "\n"))))
             (buffer-string))))))
 
+(defun treesit-jump--get-query-from-cache-or-dir (language queries-dir top-level) 
+  (let (
+         (cache-res (gethash language treesit-jump-queries-cache nil))
+         (query-res nil)
+         )
+    (if (not cache-res)
+        (progn 
+          (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
+          (puthash language query-res treesit-jump-queries-cache)
+          query-res
+          )
+      cache-res
+      )
+    )
+  )
+
 (defun treesit-jump-get-and-process-captures (query-process-func)
   (interactive)
   (let* (
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
         (queries-dir treesit-jump-queries-dir)
-        (query (treesit-jump--get-query-from-dir lang-name queries-dir t))
+        (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
         (queries-list (list query))
         )
     (funcall query-process-func queries-list)

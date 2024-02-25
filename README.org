@@ -7,3 +7,8 @@ Example config:
   :straight (:host github :repo "dmille56/treesit-jump")
   )
 #+END_SRC
+
+Jump to match: treesit-jump-jump
+Select match: treesit-jump-select
+Delete match: treesit-jump-delete
+

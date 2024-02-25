@@ -203,7 +203,7 @@ It might not be on the fist line and so we cannot just get the first line."
                                        "\n"))))
             (buffer-string))))))
 
-(defun treesit-jump-test-scm-queries ()
+(defun treesit-jump-get-and-process-captures (query-process-func)
   (interactive)
   (let* (
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
@@ -211,13 +211,23 @@ It might not be on the fist line and so we cannot just get the first line."
         (query (treesit-jump--get-query-from-dir lang-name queries-dir t))
         (queries-list (list query))
         )
-    (treesit-jump-query-select-go-to queries-list)
-    ;; (treesit-jump-query-select-visual queries-list)
-    ;; (treesit-jump-query-select-delete queries-list)
+    (funcall query-process-func queries-list)
     ))
 
+(defun treesit-jump-jump ()
+  (interactive)
+  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-go-to))
+
+(defun treesit-jump-select ()
+  (interactive)
+  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-visual))
+
+(defun treesit-jump-delete ()
+  (interactive)
+  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-delete))
+
 ;; :TODO: remove this global set-key
-(global-set-key (kbd "<f9>") 'treesit-jump-test-scm-queries)
+(global-set-key (kbd "<f9>") 'treesit-jump-jump)
 
 (provide 'treesit-jump)
 ;;; treesit-jump.el ends here

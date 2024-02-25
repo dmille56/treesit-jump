@@ -12,6 +12,7 @@
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add documentation for each function
 ;; :TODO: add override queries for each language
+;; :TODO: add caching of loaded queries (so that queries aren't needed to be read from disk everytime they are run)
 ;; :TODO: add compiled queries using treesit-query-compile for faster searching
 
 ;; Useful links:
@@ -225,9 +226,6 @@ It might not be on the fist line and so we cannot just get the first line."
 (defun treesit-jump-delete ()
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump-query-select-delete))
-
-;; :TODO: remove this global set-key
-(global-set-key (kbd "<f9>") 'treesit-jump-jump)
 
 (provide 'treesit-jump)
 ;;; treesit-jump.el ends here

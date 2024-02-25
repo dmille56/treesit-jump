@@ -1,9 +1,10 @@
 * About
-Treesit-jump: jump around your source code using emacs, treesit, and avy.
+Jump around your source code using emacs, treesit, and avy.
 
 * Table of Contents                                                     :TOC:
 - [[#about][About]]
 - [[#installation][Installation]]
+- [[#demos][Demos]]
 - [[#useful-functions][Useful functions]]
 
 * Installation
@@ -12,6 +13,8 @@ Treesit-jump: jump around your source code using emacs, treesit, and avy.
   :straight (:host github :repo "dmille56/treesit-jump")
   )
 #+END_SRC
+
+* TODO Demos
 
 * Useful functions
 - Jump to match: treesit-jump-jump

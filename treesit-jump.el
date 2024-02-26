@@ -11,7 +11,6 @@
 ;; :TODO: add jumping between parents of the node under your cursor
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add documentation for each function
-;; :TODO: test override queries for each language
 ;; :TODO: add compiled queries using treesit-query-compile for faster searching
 
 ;; Useful links:

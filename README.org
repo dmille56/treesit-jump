@@ -4,6 +4,7 @@ Jump around your source code using emacs, treesit, and avy.
 * Table of Contents                                                     :TOC:
 - [[#about][About]]
 - [[#installation][Installation]]
+- [[#config][Config]]
 - [[#demos][Demos]]
 - [[#useful-functions][Useful functions]]
 
@@ -13,6 +14,14 @@ Jump around your source code using emacs, treesit, and avy.
   :straight (:host github :repo "dmille56/treesit-jump")
   )
 #+END_SRC
+
+* Config
+How to add extra treesit-queries per mode:
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))
+(add-to-list 'treesit-jump-queries-extra-alist (cons 'python-ts-mode '("(return_statement (_)) @return")))
+#+END_SRC
+
 
 * TODO Demos
 

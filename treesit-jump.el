@@ -112,9 +112,13 @@
                                                    "treesit-queries")))))
 
 (setq treesit-jump-queries-cache (make-hash-table :test 'equal))
+(setq treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
 
 (defun treesit-jump-queries-clear-cache ()
-  (setq treesit-jump-queries-cache (make-hash-table :test 'equal)))
+  (interactive)
+  (setq treesit-jump-queries-cache (make-hash-table :test 'equal))
+  (setq treesit-jump-queries-extra-cache (make-hash-table :test 'eqaul))
+)
 
 (defun treesit-jump-queries-filter-default-func (query)
   (let* (
@@ -221,6 +225,20 @@ It might not be on the fist line and so we cannot just get the first line."
         (progn 
           (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
           (puthash language query-res treesit-jump-queries-cache)
+          ;; :TODO: compile query here
+          query-res)
+      cache-res)))
+
+(defun treesit-jump--get-extra-queries ()
+  (let (
+         (cache-res (gethash major-mode treesit-jump-queries-extra-cache nil))
+         (query-res nil)
+         )
+    (if (not cache-res)
+        (progn 
+          (setq query-res (alist-get major-mode treesit-jump-queries-extra-alist))
+          (puthash major-mode query-res treesit-jump-queries-extra-cache)
+          ;; :TODO: compile query here
           query-res)
       cache-res)))
 
@@ -230,7 +248,7 @@ It might not be on the fist line and so we cannot just get the first line."
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
         (queries-dir treesit-jump-queries-dir)
         (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
-        (extra-queries (alist-get major-mode treesit-jump-queries-extra-alist))
+        (extra-queries (treesit-jump--get-extra-queries))
         (queries-list (append (list query) extra-queries))
         )
     (funcall query-process-func queries-list)

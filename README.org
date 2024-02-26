@@ -14,7 +14,7 @@ Jump around your source code in emacs using treesit and avy.
 ** Dependencies
 1. Emacs compiled with treesit support (version 29+)
 2. Installed treesitter grammar (for the language you want to use)
-   - You can use [[https://github.com/renzmann/treesit-auto][treesit-auto]] to install grammars and auto load treesiter language modes.
+   - You can use [[https://github.com/renzmann/treesit-auto][treesit-auto]] to install grammars and auto load treesitter language modes.
 3. [[https://github.com/abo-abo/avy][Avy]] 
  
 ** Config

@@ -1,27 +1,34 @@
 * About
-Jump around your source code using emacs, treesit, and avy.
+Jump around your source code in emacs using treesit and avy.
 
 * Table of Contents                                                     :TOC:
 - [[#about][About]]
 - [[#installation][Installation]]
-- [[#config][Config]]
+  - [[#dependencies][Dependencies]]
+  - [[#config][Config]]
+  - [[#extra-config-options][Extra config options]]
 - [[#demos][Demos]]
 - [[#useful-functions][Useful functions]]
 
 * Installation
+** Dependencies
+1. Emacs compiled with treesit support (version 29+)
+2. Installed treesitter grammar (for the language you want to use)
+   - You can use [[https://github.com/renzmann/treesit-auto][treesit-auto]] to install grammars and auto load treesiter language modes.
+3. [[https://github.com/abo-abo/avy][Avy]] 
+ 
+** Config
 #+BEGIN_SRC emacs-lisp
 (use-package treesit-jump
-  :straight (:host github :repo "dmille56/treesit-jump")
-  )
+  :straight (:host github :repo "dmille56/treesit-jump"))
 #+END_SRC
 
-* Config
+** Extra config options
 How to add extra treesit-queries per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'python-ts-mode '("(return_statement (_)) @return")))
 #+END_SRC
-
 
 * TODO Demos
 

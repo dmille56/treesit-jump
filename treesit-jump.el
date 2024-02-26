@@ -11,7 +11,6 @@
 ;; :TODO: add jumping between parents of the node under your cursor
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add documentation for each function
-;; :TODO: add compiled queries using treesit-query-compile for faster searching
 
 ;; Useful links:
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
@@ -224,22 +223,21 @@ It might not be on the fist line and so we cannot just get the first line."
     (if (not cache-res)
         (progn 
           (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
-          (puthash language query-res treesit-jump-queries-cache)
-          ;; :TODO: compile query here
-          query-res)
+          (puthash language (treesit-query-compile (intern language) query-res) treesit-jump-queries-cache)
+          (gethash language treesit-jump-queries-cache nil))
       cache-res)))
 
-(defun treesit-jump--get-extra-queries ()
+(defun treesit-jump--get-extra-queries (language)
   (let (
+         (lang-symbol (intern language))
          (cache-res (gethash major-mode treesit-jump-queries-extra-cache nil))
          (query-res nil)
          )
     (if (not cache-res)
         (progn 
           (setq query-res (alist-get major-mode treesit-jump-queries-extra-alist))
-          (puthash major-mode query-res treesit-jump-queries-extra-cache)
-          ;; :TODO: compile query here
-          query-res)
+          (puthash major-mode (mapcar (lambda (x) (treesit-query-compile lang-symbol x)) query-res) treesit-jump-queries-extra-cache)
+          (gethash major-mode treesit-jump-queries-extra-cache nil))
       cache-res)))
 
 (defun treesit-jump-get-and-process-captures (query-process-func)
@@ -248,7 +246,7 @@ It might not be on the fist line and so we cannot just get the first line."
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
         (queries-dir treesit-jump-queries-dir)
         (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
-        (extra-queries (treesit-jump--get-extra-queries))
+        (extra-queries (treesit-jump--get-extra-queries lang-name))
         (queries-list (append (list query) extra-queries))
         )
     (funcall query-process-func queries-list)

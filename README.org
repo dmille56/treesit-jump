@@ -20,7 +20,7 @@ Jump around your source code in emacs using treesit and avy.
 ** Config
 #+BEGIN_SRC emacs-lisp
 (use-package treesit-jump
-  :straight (:host github :repo "dmille56/treesit-jump"))
+  :straight (:host github :repo "dmille56/treesit-jump" :files ("*.el" "treesit-queries")))
 #+END_SRC
 
 ** Extra config options

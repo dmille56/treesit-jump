@@ -1,7 +1,14 @@
 * About
+:PROPERTIES:
+:CUSTOM_ID: about
+:END:
 Jump around your source code in emacs using treesit and avy.
 
-* Table of Contents                                                     :TOC:
+* Table of Contents
+:PROPERTIES:
+:TOC:      :include all :ignore (this)
+:END:
+:CONTENTS:
 - [[#about][About]]
 - [[#installation][Installation]]
   - [[#dependencies][Dependencies]]
@@ -9,21 +16,34 @@ Jump around your source code in emacs using treesit and avy.
   - [[#extra-config-options][Extra config options]]
 - [[#demos][Demos]]
 - [[#useful-functions][Useful functions]]
+:END:
 
 * Installation
+:PROPERTIES:
+:CUSTOM_ID: installation
+:END:
 ** Dependencies
+:PROPERTIES:
+:CUSTOM_ID: dependencies
+:END:
 1. Emacs compiled with treesit support (version 29+)
 2. Installed treesitter grammar (for the language you want to use)
    - You can use [[https://github.com/renzmann/treesit-auto][treesit-auto]] to install grammars and auto load treesitter language modes.
 3. [[https://github.com/abo-abo/avy][Avy]] 
  
 ** Config
+:PROPERTIES:
+:CUSTOM_ID: config
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package treesit-jump
   :straight (:host github :repo "dmille56/treesit-jump" :files ("*.el" "treesit-queries")))
 #+END_SRC
 
 ** Extra config options
+:PROPERTIES:
+:CUSTOM_ID: extra-config-options
+:END:
 How to add extra treesit-queries per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))
@@ -31,8 +51,14 @@ How to add extra treesit-queries per mode:
 #+END_SRC
 
 * TODO Demos
+:PROPERTIES:
+:CUSTOM_ID: demos
+:END:
 
 * Useful functions
+:PROPERTIES:
+:CUSTOM_ID: useful-functions
+:END:
 - Jump to match: treesit-jump-jump
 - Select match: treesit-jump-select
 - Delete match: treesit-jump-delete

@@ -8,9 +8,10 @@
 ;;; Commentary:
 
 ;; Notes:
-;; :TODO: add jumping between parents of the node under your cursor
+;; :TODO: add documentation for each function and refactor
+;; :TODO: add filtering of queries configuration per each language
 ;; :TODO: test different queries per language and make sure that they can compile
-;; :TODO: add documentation for each function
+;; :TODO: add jumping between parents of the node under your cursor
 
 ;; Useful links:
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide

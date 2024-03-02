@@ -8,7 +8,7 @@
 ;;; Commentary:
 
 ;; Notes:
-;; :TODO: add documentation for each function and refactor
+;; :TODO: refactor code some
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add jumping between parents of the node under your cursor
 
@@ -41,7 +41,7 @@
   :type 'function
   :group 'treesit-jump)
 
-(defcustom treesit-jump-positions-filter-func #'avy-process
+(defcustom treesit-jump-positions-select-fun #'avy-process
   "Function used to select matched treesit queries on screen."
   :type 'function
   :group 'treesit-jump)
@@ -119,12 +119,14 @@
 (setq treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
 
 (defun treesit-jump-queries-clear-cache ()
+  "Clear the queries cache."
   (interactive)
   (setq treesit-jump-queries-cache (make-hash-table :test 'equal))
   (setq treesit-jump-queries-extra-cache (make-hash-table :test 'eqaul))
 )
 
 (defun treesit-jump-queries-filter-default-func (query)
+  "Filter out results from the `QUERY' that are in the query filter list."
   (let* (
         (capture-name (symbol-name (car query)))
         (major-mode-filter-list (alist-get major-mode treesit-jump-queries-filter-mode-alist))
@@ -135,6 +137,7 @@
     ))
 
 (defun treesit-jump-query-get-captures (query-list)
+  "Get visible treesit captures from a `QUERY-LIST'."
   (let* (
          (start-window (window-start))
          (end-window (window-end (selected-window) t))
@@ -146,15 +149,17 @@
     ))
 
 (defun treesit-jump-query-select (query-list)
+  "Get captures based upon the `QUERY-LIST' and then return the user selected one."
   (let* (
          (captures (treesit-jump-query-get-captures query-list))
          (positions (sort (mapcar #'treesit-node-start (mapcar #'cdr captures)) #'<))
-         (selected-pos (funcall treesit-jump-positions-filter-func positions))
+         (selected-pos (funcall treesit-jump-positions-select-fun positions))
          )
     (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start (cdr x)) selected-pos)) captures) nil)
     ))
 
 (defun treesit-jump-query-select-go-to (query-list)
+  "Input a `QUERY-LIST' select a capture from it and go to it."
   (interactive)
   (let* (
          (selected (treesit-jump-query-select query-list))
@@ -165,6 +170,7 @@
       )))
 
 (defun treesit-jump-query-select-visual (query-list)
+  "Input a `QUERY-LIST' select a capture from it and select it's region."
   (interactive)
   (let* (
          (selected (treesit-jump-query-select query-list))
@@ -177,6 +183,7 @@
          )))
 
 (defun treesit-jump-query-select-delete (query-list)
+  "Input a `QUERY-LIST' select a capture from it and delete it."
   (interactive)
   (let* (
          (selected (treesit-jump-query-select query-list))
@@ -200,8 +207,8 @@ It might not be on the fist line and so we cannot just get the first line."
                 (match-string 1 line)))))))
 
 (defun treesit-jump--get-query-from-dir (language queries-dir top-level)
-  "Get tree sitter query for `LANGUAGE' from `QUERIES-DIR'.
-`TOP-LEVEL' is used to mention if we should load optional inherits."
+  "Get treesit query for `LANGUAGE' from `QUERIES-DIR'.
+`TOP-LEVEL': is used to mention if we should load optional inherits."
   (let (
         (filename (concat queries-dir language "/textobjects.scm"))
         )
@@ -222,32 +229,36 @@ It might not be on the fist line and so we cannot just get the first line."
                                        "\n"))))
             (buffer-string))))))
 
-(defun treesit-jump--get-query-from-cache-or-dir (language queries-dir top-level) 
+(defun treesit-jump--get-query-from-cache-or-dir (language queries-dir top-level)
+  "Get treesit query for the `LANGUAGE' from the `QUERIES-DIR'.
+`TOP-LEVEL': should we load optional inherits.  Using caching."
   (let (
          (cache-res (gethash language treesit-jump-queries-cache nil))
          (query-res nil)
          )
     (if (not cache-res)
-        (progn 
+        (progn
           (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
           (puthash language (treesit-query-compile (intern language) query-res) treesit-jump-queries-cache)
           (gethash language treesit-jump-queries-cache nil))
       cache-res)))
 
 (defun treesit-jump--get-extra-queries (language)
+  "Get extra queries from the `LANGUAGE' and current major-mode."
   (let (
          (lang-symbol (intern language))
          (cache-res (gethash major-mode treesit-jump-queries-extra-cache nil))
          (query-res nil)
          )
     (if (not cache-res)
-        (progn 
+        (progn
           (setq query-res (alist-get major-mode treesit-jump-queries-extra-alist))
           (puthash major-mode (mapcar (lambda (x) (treesit-query-compile lang-symbol x)) query-res) treesit-jump-queries-extra-cache)
           (gethash major-mode treesit-jump-queries-extra-cache nil))
       cache-res)))
 
 (defun treesit-jump-get-and-process-captures (query-process-func)
+  "Get captures and process them with the `QUERY-PROCESS-FUNC'."
   (interactive)
   (let* (
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
@@ -260,14 +271,17 @@ It might not be on the fist line and so we cannot just get the first line."
     ))
 
 (defun treesit-jump-jump ()
+  "Select and jump to a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump-query-select-go-to))
 
 (defun treesit-jump-select ()
+  "Select and select the region of a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump-query-select-visual))
 
 (defun treesit-jump-delete ()
+  "Select and delete the region of a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump-query-select-delete))
 

@@ -9,9 +9,12 @@
 
 ;; Notes:
 ;; :TODO: add check for treesit available and major-mode supported and output error message if not
+;;   Check if Emacs is built with tree-sitter library
+;;   (treesit-available-p)
+;;   Make sure Emacs can find the language grammar you want to use
+;;   (treesit-language-available-p ‘lang)
 ;; :TODO: refactor code some
-;; :TODO: test different queries per language and make sure that they can compile and work
-;; Tiobe Index: Python X, C X, C++, Java X, C# X, JavaScript, TypeScript, Go X, Haskell, Rust X
+;; :TODO: test different queries per language and make sure that they can compile and work: Python X, C X, C++ X, Java X, C# X, JavaScript X, TypeScript X, Go X, Haskell, Rust X
 ;; :TODO: add jumping between parents of the node under your cursor
 
 ;; Useful links:
@@ -81,7 +84,7 @@
                           (javascript-mode . "javascript")
                           (javascript-ts-mode . "javascript")
                           (js-mode . "javascript")
-                          (js-ts-mode . "js")
+                          (js-ts-mode . "javascript")
                           (js2-mode . "javascript")
                           (js3-mode . "javascript")
                           (julia-mode . "julia")
@@ -224,9 +227,9 @@ It might not be on the fist line and so we cannot just get the first line."
                   (insert (string-join (mapcar (lambda (x)
                                                  (if (string-prefix-p "(" x)
                                                      (if top-level
-                                                         (treesit-jump--get-queries-from-dir (substring x 1 -1)
+                                                         (treesit-jump--get-query-from-dir (substring x 1 -1)
                                                                                                        queries-dir nil))
-                                                   (treesit-jump--get-queries-from-dir x queries-dir nil)))
+                                                   (treesit-jump--get-query-from-dir x queries-dir nil)))
                                                (split-string inherits-line ","))
                                        "\n"))))
             (buffer-string))))))

@@ -54,6 +54,11 @@ How to add extra treesit-queries per mode:
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'python-ts-mode '("(return_statement (_)) @return")))
 #+END_SRC
 
+How to add queries to filter out of results per mode:
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'treesit-jump-queries-filter-mode-alist (cons 'python-ts-mode '("class")))
+#+END_SRC
+
 * TODO Demos
 :PROPERTIES:
 :CUSTOM_ID: demos

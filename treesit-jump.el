@@ -9,7 +9,6 @@
 
 ;; Notes:
 ;; :TODO: add documentation for each function and refactor
-;; :TODO: add filtering of queries configuration per each language
 ;; :TODO: test different queries per language and make sure that they can compile
 ;; :TODO: add jumping between parents of the node under your cursor
 
@@ -28,9 +27,14 @@
   :group 'emacs)
 
 (defcustom treesit-jump-queries-filter-list nil
-  "Query captures to filter out of results uses regex."
+  "Query captures to filter out of results uses regex for all modes."
   :type '(repeat string)
   :group 'treesit-jump)
+
+(defcustom treesit-jump-queries-filter-mode-alist nil
+  "Query captures to filter out of results using regex for each mode."
+  :group 'treesit-jump
+  :type '(alist :key-type (symbol) :value-type '(repeat string)))
 
 (defcustom treesit-jump-queries-filter-func #'treesit-jump-queries-filter-default-func
   "Function used to filter matched treesit queries."
@@ -123,7 +127,9 @@
 (defun treesit-jump-queries-filter-default-func (query)
   (let* (
         (capture-name (symbol-name (car query)))
-        (matches (seq-filter (lambda (s) (string-match s capture-name)) treesit-jump-queries-filter-list))
+        (major-mode-filter-list (alist-get major-mode treesit-jump-queries-filter-mode-alist))
+        (filter-list (append treesit-jump-queries-filter-list major-mode-filter-list))
+        (matches (seq-filter (lambda (s) (string-match s capture-name)) filter-list))
         )
     (if matches nil t)
     ))

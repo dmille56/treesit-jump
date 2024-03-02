@@ -26,7 +26,7 @@
   "Customize group for treesit-jump.el."
   :group 'emacs)
 
-(defcustom treesit-jump-queries-filter-list '("inner" "test" "param")
+(defcustom treesit-jump-queries-filter-list nil
   "Query captures to filter out of results uses regex."
   :type '(repeat string)
   :group 'treesit-jump)

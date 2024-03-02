@@ -8,8 +8,10 @@
 ;;; Commentary:
 
 ;; Notes:
+;; :TODO: add check for treesit available and major-mode supported and output error message if not
 ;; :TODO: refactor code some
-;; :TODO: test different queries per language and make sure that they can compile
+;; :TODO: test different queries per language and make sure that they can compile and work
+;; Tiobe Index: Python X, C X, C++, Java X, C# X, JavaScript, TypeScript, Go X, Haskell, Rust X
 ;; :TODO: add jumping between parents of the node under your cursor
 
 ;; Useful links:

@@ -8,13 +8,8 @@
 ;;; Commentary:
 
 ;; Notes:
-;; :TODO: add check for treesit available and major-mode supported and output error message if not
-;;   Check if Emacs is built with tree-sitter library
-;;   (treesit-available-p)
-;;   Make sure Emacs can find the language grammar you want to use
-;;   (treesit-language-available-p ‘lang)
 ;; :TODO: refactor code some
-;; :TODO: test different queries per language and make sure that they can compile and work: Python X, C X, C++ X, Java X, C# X, JavaScript X, TypeScript X, Go X, Haskell, Rust X
+;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
 ;; :TODO: add jumping between parents of the node under your cursor
 
 ;; Useful links:
@@ -265,15 +260,27 @@ It might not be on the fist line and so we cannot just get the first line."
 (defun treesit-jump-get-and-process-captures (query-process-func)
   "Get captures and process them with the `QUERY-PROCESS-FUNC'."
   (interactive)
-  (let* (
+  (let (
         (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
-        (queries-dir treesit-jump-queries-dir)
-        (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
-        (extra-queries (treesit-jump--get-extra-queries lang-name))
-        (queries-list (append (list query) extra-queries))
         )
-    (funcall query-process-func queries-list)
-    ))
+
+    (unless (treesit-available-p)
+      (error "Treesit is not available... Check and make sure you're using Emacs 29+"))
+
+    (unless lang-name
+      (error (format "Treesit-jump does not support mode: %s" major-mode)))
+
+    (unless (treesit-language-available-p (intern lang-name))
+      (error (format "Treesit is not available for language %s" lang-name)))
+
+    (let* (
+           (queries-dir treesit-jump-queries-dir)
+           (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
+           (extra-queries (treesit-jump--get-extra-queries lang-name))
+           (queries-list (append (list query) extra-queries))
+           )
+      (funcall query-process-func queries-list)
+      )))
 
 (defun treesit-jump-jump ()
   "Select and jump to a treesit query for the current major-mode."

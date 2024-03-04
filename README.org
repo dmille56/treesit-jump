@@ -16,6 +16,7 @@ Jump around your source code in emacs using treesit and avy.
   - [[#extra-config-options][Extra config options]]
 - [[#demos][Demos]]
 - [[#useful-functions][Useful functions]]
+- [[#notes][Notes]]
 :END:
 
 * Installation
@@ -75,3 +76,9 @@ treesit-jump-queries-clear-cache
 - Jump to match: treesit-jump-jump
 - Select match: treesit-jump-select
 - Delete match: treesit-jump-delete
+
+* Notes
+:PROPERTIES:
+:CUSTOM_ID: notes
+:END:
+I've tested that the queries compile for the following languages: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust.

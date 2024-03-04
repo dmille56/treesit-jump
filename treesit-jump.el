@@ -8,7 +8,6 @@
 ;;; Commentary:
 
 ;; Notes:
-;; :TODO: refactor code some
 ;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
 ;; :TODO: add jumping between parents of the node under your cursor
 
@@ -36,7 +35,7 @@
   :group 'treesit-jump
   :type '(alist :key-type (symbol) :value-type '(repeat string)))
 
-(defcustom treesit-jump-queries-filter-func #'treesit-jump-queries-filter-default-func
+(defcustom treesit-jump-queries-filter-func #'treesit-jump--queries-filter-default-func
   "Function used to filter matched treesit queries."
   :type 'function
   :group 'treesit-jump)
@@ -125,7 +124,7 @@
   (setq treesit-jump-queries-extra-cache (make-hash-table :test 'eqaul))
 )
 
-(defun treesit-jump-queries-filter-default-func (query)
+(defun treesit-jump--queries-filter-default-func (query)
   "Filter out results from the `QUERY' that are in the query filter list."
   (let* (
         (capture-name (symbol-name (car query)))
@@ -136,7 +135,7 @@
     (if matches nil t)
     ))
 
-(defun treesit-jump-query-get-captures (query-list)
+(defun treesit-jump--query-get-captures (query-list)
   "Get visible treesit captures from a `QUERY-LIST'."
   (let* (
          (start-window (window-start))
@@ -148,32 +147,32 @@
     captures
     ))
 
-(defun treesit-jump-query-select (query-list)
+(defun treesit-jump--query-select (query-list)
   "Get captures based upon the `QUERY-LIST' and then return the user selected one."
   (let* (
-         (captures (treesit-jump-query-get-captures query-list))
+         (captures (treesit-jump--query-get-captures query-list))
          (positions (sort (mapcar #'treesit-node-start (mapcar #'cdr captures)) #'<))
          (selected-pos (funcall treesit-jump-positions-select-fun positions))
          )
     (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start (cdr x)) selected-pos)) captures) nil)
     ))
 
-(defun treesit-jump-query-select-go-to (query-list)
+(defun treesit-jump--query-select-go-to (query-list)
   "Input a `QUERY-LIST' select a capture from it and go to it."
   (interactive)
   (let* (
-         (selected (treesit-jump-query-select query-list))
+         (selected (treesit-jump--query-select query-list))
          (start (treesit-node-start (cdr selected)))
          )
     (when start
       (goto-char start)
       )))
 
-(defun treesit-jump-query-select-visual (query-list)
+(defun treesit-jump--query-select-visual (query-list)
   "Input a `QUERY-LIST' select a capture from it and select it's region."
   (interactive)
   (let* (
-         (selected (treesit-jump-query-select query-list))
+         (selected (treesit-jump--query-select query-list))
          (start (treesit-node-start (cdr selected)))
          (end (treesit-node-end (cdr selected)))
          )
@@ -182,11 +181,11 @@
           (set-mark end)
          )))
 
-(defun treesit-jump-query-select-delete (query-list)
+(defun treesit-jump--query-select-delete (query-list)
   "Input a `QUERY-LIST' select a capture from it and delete it."
   (interactive)
   (let* (
-         (selected (treesit-jump-query-select query-list))
+         (selected (treesit-jump--query-select query-list))
          (start (treesit-node-start (cdr selected)))
          (end (treesit-node-end (cdr selected)))
          )
@@ -285,17 +284,17 @@ It might not be on the fist line and so we cannot just get the first line."
 (defun treesit-jump-jump ()
   "Select and jump to a treesit query for the current major-mode."
   (interactive)
-  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-go-to))
+  (treesit-jump-get-and-process-captures #'treesit-jump--query-select-go-to))
 
 (defun treesit-jump-select ()
   "Select and select the region of a treesit query for the current major-mode."
   (interactive)
-  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-visual))
+  (treesit-jump-get-and-process-captures #'treesit-jump--query-select-visual))
 
 (defun treesit-jump-delete ()
   "Select and delete the region of a treesit query for the current major-mode."
   (interactive)
-  (treesit-jump-get-and-process-captures #'treesit-jump-query-select-delete))
+  (treesit-jump-get-and-process-captures #'treesit-jump--query-select-delete))
 
 (provide 'treesit-jump)
 ;;; treesit-jump.el ends here

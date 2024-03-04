@@ -40,8 +40,7 @@ Jump around your source code in emacs using treesit and avy.
   :straight (:host github :repo "dmille56/treesit-jump" :files ("*.el" "treesit-queries"))
   :config
   ;; Optional: add some queries to filter out of results (since they can be too cluttered sometimes)
-  (setq treesit-jump-queries-filter-list '("inner" "test" "param"))
-)
+  (setq treesit-jump-queries-filter-list '("inner" "test" "param")))
 #+END_SRC
 
 ** Extra config options
@@ -59,6 +58,11 @@ How to add queries to filter out of results per mode:
 (add-to-list 'treesit-jump-queries-filter-mode-alist (cons 'python-ts-mode '("class")))
 #+END_SRC
 
+Function to clear cache (useful if you've added to treesit-queries per node after running treesit-jump functions):
+#+BEGIN_SRC emacs-lisp
+treesit-jump-queries-clear-cache
+#+END_SRC
+
 * TODO Demos
 :PROPERTIES:
 :CUSTOM_ID: demos
@@ -71,4 +75,3 @@ How to add queries to filter out of results per mode:
 - Jump to match: treesit-jump-jump
 - Select match: treesit-jump-select
 - Delete match: treesit-jump-delete
-

@@ -10,6 +10,7 @@
 ;; Notes:
 ;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
 ;; :TODO: add jumping between parents of the node under your cursor
+;; :TODO: add better visual selection between regions
 
 ;; Useful links:
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide

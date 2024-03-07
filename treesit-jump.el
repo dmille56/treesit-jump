@@ -9,7 +9,7 @@
 
 ;; Notes:
 ;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
-;; :TODO: add jumping between parents of the node under your cursor
+;; :TODO: refactor: jumping between parents of the node under your cursor
 ;; :TODO: add better visual selection between regions
 
 ;; Useful links:
@@ -296,6 +296,34 @@ It might not be on the fist line and so we cannot just get the first line."
   "Select and delete the region of a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump--query-select-delete))
+
+(defun treesit-jump-get-parent-nodes-from-point ()
+  "Get a list of the parents of nodes of treesit node at the current point."
+  (let* (
+         (node (treesit-node-at (point)))
+         (parent (treesit-node-parent node))
+         (node-list (list node)))
+    (while parent
+      (setq node-list (append node-list (list parent)))
+      (setq parent (treesit-node-parent parent)))
+    node-list))
+
+(defun treesit-jump--parent-select (node-list)
+  "Select a node from the `NODE-LIST'."
+  (let* (
+         (positions (sort (mapcar #'treesit-node-start node-list) #'<))
+         (selected-pos (funcall treesit-jump-positions-select-fun positions)))
+    (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start x) selected-pos)) node-list) nil)))
+
+(defun treesit-jump-parent-jump ()
+  "Select and jump to a treesit parent of the current node."
+  (interactive)
+  (let* (
+         (node-list (treesit-jump-get-parent-nodes-from-point))
+         (selected (treesit-jump--parent-select node-list))
+         (start (treesit-node-start selected)))
+    (when start
+      (goto-char start))))
 
 (provide 'treesit-jump)
 ;;; treesit-jump.el ends here

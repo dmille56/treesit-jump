@@ -15,8 +15,10 @@ Jump around your source code in emacs using treesit and avy.
   - [[#config][Config]]
   - [[#extra-config-options][Extra config options]]
 - [[#demos][Demos]]
+- [[#queries][Queries]]
 - [[#useful-functions][Useful functions]]
 - [[#notes][Notes]]
+- [[#special-thanks][Special Thanks]]
 :END:
 
 * Installation
@@ -48,7 +50,7 @@ Jump around your source code in emacs using treesit and avy.
 :PROPERTIES:
 :CUSTOM_ID: extra-config-options
 :END:
-How to add extra treesit-queries per mode:
+How to add extra treesit queries per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'python-ts-mode '("(return_statement (_)) @return")))
@@ -69,6 +71,15 @@ treesit-jump-queries-clear-cache
 :CUSTOM_ID: demos
 :END:
 
+* Queries
+:PROPERTIES:
+:CUSTOM_ID: queries
+:END:
+
+Queries are defined in treesit-queries directory.  Queries must be defined separately for each language.  List of the query capture types are defined here: [[https://github.com/nvim-treesitter/nvim-treesitter-textobjects?tab=readme-ov-file#built-in-textobjects]].
+
+For help defining your own queries refer to: [[https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide#query-syntax]].  Also recommend the following package for debugging your queries: https://git.sr.ht/~meow_king/ts-query-highlight.
+
 * Useful functions
 :PROPERTIES:
 :CUSTOM_ID: useful-functions
@@ -76,9 +87,16 @@ treesit-jump-queries-clear-cache
 - Jump to match: treesit-jump-jump
 - Select match: treesit-jump-select
 - Delete match: treesit-jump-delete
+- Jump to one of the current nodes parents: treesit-jump-parent-jump
 
 * Notes
 :PROPERTIES:
 :CUSTOM_ID: notes
 :END:
 I've tested that the queries compile for the following languages: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust.
+
+* Special Thanks
+:PROPERTIES:
+:CUSTOM_ID: special-thanks
+:END:
+This package takes inspiration from [[https://github.com/abo-abo/avy][avy]], and [[https://github.com/meain/evil-textobj-tree-sitter][evil-textobj-tree-sitter]] .  Queries (and a bit of code to process them) were taken originally from evil-textobj-tree-sitter.  The code here is licensed under the same license (Apache-2.0). 

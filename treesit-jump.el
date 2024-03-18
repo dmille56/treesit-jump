@@ -22,6 +22,15 @@
 (require 'avy)
 (require 'cl-lib)
 
+;;;###autoload
+(transient-define-prefix treesit-jump-transient ()
+  "Transient for using treesit-jump."
+  ["Treesit-Jump"
+   ("j" "jump" treesit-jump-jump)
+   ("s" "select" treesit-jump-select)
+   ("d" "delete" treesit-jump-delete)
+   ("p" "parent jump" treesit-jump-parent-jump)])
+
 (defgroup treesit-jump nil
   "Customize group for treesit-jump.el."
   :group 'emacs)
@@ -282,16 +291,19 @@ It might not be on the fist line and so we cannot just get the first line."
       (funcall query-process-func queries-list)
       )))
 
+;;;###autoload
 (defun treesit-jump-jump ()
   "Select and jump to a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump--query-select-go-to))
 
+;;;###autoload
 (defun treesit-jump-select ()
   "Select and select the region of a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump--query-select-visual))
 
+;;;###autoload
 (defun treesit-jump-delete ()
   "Select and delete the region of a treesit query for the current major-mode."
   (interactive)
@@ -315,6 +327,7 @@ It might not be on the fist line and so we cannot just get the first line."
          (selected-pos (funcall treesit-jump-positions-select-fun positions)))
     (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start x) selected-pos)) node-list) nil)))
 
+;;;###autoload
 (defun treesit-jump-parent-jump ()
   "Select and jump to a treesit parent of the current node."
   (interactive)

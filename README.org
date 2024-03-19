@@ -72,7 +72,7 @@ treesit-jump-queries-clear-cache
 :END:
 
 treesit-jump-jump
-[[https://i.imgur.com/c4CmpJF.gif][treesit-jump-jump]]
+[[https://i.imgur.com/c4CmpJF.gif]]
 
 * Queries
 :PROPERTIES:

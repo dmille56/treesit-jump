@@ -71,6 +71,9 @@ treesit-jump-queries-clear-cache
 :CUSTOM_ID: demos
 :END:
 
+treesit-jump-jump
+[[https://i.imgur.com/bYeCHwd.gif]]
+
 * Queries
 :PROPERTIES:
 :CUSTOM_ID: queries

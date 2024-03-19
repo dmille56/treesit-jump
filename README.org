@@ -4,17 +4,33 @@
 :END:
 Jump around your source code in emacs using treesit and avy.
 
+* Demos
+:PROPERTIES:
+:CUSTOM_ID: demos
+:END:
+treesit-jump-jump
+[[https://i.imgur.com/bYeCHwd.gif]]
+
+treesit-jump-select
+[[https://i.imgur.com/Ge5g7pb.gif]]
+
+treesit-jump-delete
+[[https://i.imgur.com/ofIUGTj.gif]]
+
+treesit-jump-parent-jump
+[[https://i.imgur.com/2222Jun.gif]]
+
 * Table of Contents
 :PROPERTIES:
 :TOC:      :include all :ignore (this)
 :END:
 :CONTENTS:
 - [[#about][About]]
+- [[#demos][Demos]]
 - [[#installation][Installation]]
   - [[#dependencies][Dependencies]]
   - [[#config][Config]]
   - [[#extra-config-options][Extra config options]]
-- [[#demos][Demos]]
 - [[#queries][Queries]]
 - [[#useful-functions][Useful functions]]
 - [[#notes][Notes]]
@@ -50,6 +66,8 @@ Jump around your source code in emacs using treesit and avy.
 :PROPERTIES:
 :CUSTOM_ID: extra-config-options
 :END:
+Transient for all the functions: treesit-jump-transient
+
 How to add extra treesit queries per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))

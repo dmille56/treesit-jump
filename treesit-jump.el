@@ -29,7 +29,8 @@
    ("j" "jump" treesit-jump-jump)
    ("s" "select" treesit-jump-select)
    ("d" "delete" treesit-jump-delete)
-   ("p" "parent jump" treesit-jump-parent-jump)])
+   ("p" "parent jump" treesit-jump-parent-jump)
+   ("c" "clear cache" treesit-jump-queries-clear-cache)])
 
 (defgroup treesit-jump nil
   "Customize group for treesit-jump.el."
@@ -131,8 +132,8 @@
   "Clear the queries cache."
   (interactive)
   (setq treesit-jump-queries-cache (make-hash-table :test 'equal))
-  (setq treesit-jump-queries-extra-cache (make-hash-table :test 'eqaul))
-)
+  (setq treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
+  (message "Treesit-jump cache cleared."))
 
 (defun treesit-jump--queries-filter-default-func (query)
   "Filter out results from the `QUERY' that are in the query filter list."

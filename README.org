@@ -66,20 +66,20 @@ treesit-jump-parent-jump (used to jump to a parent of the current node under the
 :PROPERTIES:
 :CUSTOM_ID: extra-config-options
 :END:
-Transient for all the functions: treesit-jump-transient
+- Transient for all the functions: treesit-jump-transient
 
-How to add extra treesit queries per mode:
+- How to add extra treesit queries per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'powershell-ts-mode '("(flow_control_statement (_)) @flow")))
 (add-to-list 'treesit-jump-queries-extra-alist (cons 'python-ts-mode '("(return_statement (_)) @return")))
 #+END_SRC
 
-How to add queries to filter out of results per mode:
+- How to add queries to filter out of results per mode:
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'treesit-jump-queries-filter-mode-alist (cons 'python-ts-mode '("class")))
 #+END_SRC
 
-Function to clear cache (useful if you've added to treesit-queries per node after running treesit-jump functions):
+- Function to clear cache (useful if you've added to treesit-queries per node after running treesit-jump functions):
 #+BEGIN_SRC emacs-lisp
 treesit-jump-queries-clear-cache
 #+END_SRC

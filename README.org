@@ -8,16 +8,17 @@ Jump around your source code in emacs using treesit and avy.
 :PROPERTIES:
 :CUSTOM_ID: demos
 :END:
-treesit-jump-jump
+
+treesit-jump-jump (used to jump to match)
 [[https://i.imgur.com/bYeCHwd.gif]]
 
-treesit-jump-select
+treesit-jump-select (used to select the region of a match)
 [[https://i.imgur.com/Ge5g7pb.gif]]
 
-treesit-jump-delete
+treesit-jump-delete (used to delete the region of a match)
 [[https://i.imgur.com/ofIUGTj.gif]]
 
-treesit-jump-parent-jump
+treesit-jump-parent-jump (used to jump to a parent of the current node under the cursor)
 [[https://i.imgur.com/2222Jun.gif]]
 
 * Table of Contents
@@ -32,7 +33,6 @@ treesit-jump-parent-jump
   - [[#config][Config]]
   - [[#extra-config-options][Extra config options]]
 - [[#queries][Queries]]
-- [[#useful-functions][Useful functions]]
 - [[#notes][Notes]]
 - [[#special-thanks][Special Thanks]]
 :END:
@@ -84,14 +84,6 @@ Function to clear cache (useful if you've added to treesit-queries per node afte
 treesit-jump-queries-clear-cache
 #+END_SRC
 
-* TODO Demos
-:PROPERTIES:
-:CUSTOM_ID: demos
-:END:
-
-treesit-jump-jump
-[[https://i.imgur.com/bYeCHwd.gif]]
-
 * Queries
 :PROPERTIES:
 :CUSTOM_ID: queries
@@ -100,15 +92,6 @@ treesit-jump-jump
 Queries are defined in treesit-queries directory.  Queries must be defined separately for each language.  List of the query capture types are defined here: [[https://github.com/nvim-treesitter/nvim-treesitter-textobjects?tab=readme-ov-file#built-in-textobjects]].
 
 For help defining your own queries refer to: [[https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide#query-syntax]].  Also recommend the following package for debugging your queries: https://git.sr.ht/~meow_king/ts-query-highlight.
-
-* Useful functions
-:PROPERTIES:
-:CUSTOM_ID: useful-functions
-:END:
-- Jump to match: treesit-jump-jump
-- Select match: treesit-jump-select
-- Delete match: treesit-jump-delete
-- Jump to one of the current nodes parents: treesit-jump-parent-jump
 
 * Notes
 :PROPERTIES:

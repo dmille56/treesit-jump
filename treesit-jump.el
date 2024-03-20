@@ -1,12 +1,14 @@
-;;; treesit-jump --- Summary
+;;; treesit-jump.el --- Summary
 
 ;; Jump around using treesitter
 
 ;; requires Emacs 29+ for treesitter support
 ;; requires avy and transient
 
+;; URL: https://github.com/dmille56/treesit-jump
 ;; Package-Version: 0.0.1
-;; Package-Requires: ((emacs "29.1") (cl-lib "0.5") (avy "0.4") (transient "0.5.3"))
+;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3"))
+;; Keywords: treesit, tree-sitter, avy, jump, matching
 
 ;;; Commentary:
 
@@ -145,10 +147,8 @@
         (capture-name (symbol-name (car query)))
         (major-mode-filter-list (alist-get major-mode treesit-jump-queries-filter-mode-alist))
         (filter-list (append treesit-jump-queries-filter-list major-mode-filter-list))
-        (matches (seq-filter (lambda (s) (string-match s capture-name)) filter-list))
-        )
-    (if matches nil t)
-    ))
+        (matches (seq-filter (lambda (s) (string-match s capture-name)) filter-list)))
+    (if matches nil t)))
 
 (defun treesit-jump--query-get-captures (query-list)
   "Get visible treesit captures from a `QUERY-LIST'."
@@ -157,31 +157,25 @@
          (end-window (window-end (selected-window) t))
          (root-node (treesit-buffer-root-node))
          (raw-captures (apply #'append (mapcar (lambda (query) (treesit-query-capture root-node query start-window end-window)) query-list)))
-         (captures (seq-filter (lambda (x) (funcall treesit-jump-queries-filter-func x)) raw-captures))
-         )
-    captures
-    ))
+         (captures (seq-filter (lambda (x) (funcall treesit-jump-queries-filter-func x)) raw-captures)))
+    captures))
 
 (defun treesit-jump--query-select (query-list)
   "Get captures based upon the `QUERY-LIST' and then return the user selected one."
   (let* (
          (captures (treesit-jump--query-get-captures query-list))
          (positions (sort (mapcar #'treesit-node-start (mapcar #'cdr captures)) #'<))
-         (selected-pos (funcall treesit-jump-positions-select-fun positions))
-         )
-    (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start (cdr x)) selected-pos)) captures) nil)
-    ))
+         (selected-pos (funcall treesit-jump-positions-select-fun positions)))
+    (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start (cdr x)) selected-pos)) captures) nil)))
 
 (defun treesit-jump--query-select-go-to (query-list)
   "Input a `QUERY-LIST' select a capture from it and go to it."
   (interactive)
   (let* (
          (selected (treesit-jump--query-select query-list))
-         (start (treesit-node-start (cdr selected)))
-         )
+         (start (treesit-node-start (cdr selected))))
     (when start
-      (goto-char start)
-      )))
+      (goto-char start))))
 
 (defun treesit-jump--query-select-visual (query-list)
   "Input a `QUERY-LIST' select a capture from it and select it's region."
@@ -189,12 +183,10 @@
   (let* (
          (selected (treesit-jump--query-select query-list))
          (start (treesit-node-start (cdr selected)))
-         (end (treesit-node-end (cdr selected)))
-         )
+         (end (treesit-node-end (cdr selected))))
     (when (and start end)
           (goto-char start)
-          (set-mark end)
-         )))
+          (set-mark end))))
 
 (defun treesit-jump--query-select-delete (query-list)
   "Input a `QUERY-LIST' select a capture from it and delete it."
@@ -202,8 +194,7 @@
   (let* (
          (selected (treesit-jump--query-select query-list))
          (start (treesit-node-start (cdr selected)))
-         (end (treesit-node-end (cdr selected)))
-         )
+         (end (treesit-node-end (cdr selected))))
     (when (and start end)
       (delete-region start end))))
 
@@ -224,8 +215,7 @@ It might not be on the fist line and so we cannot just get the first line."
   "Get treesit query for `LANGUAGE' from `QUERIES-DIR'.
 `TOP-LEVEL': is used to mention if we should load optional inherits."
   (let (
-        (filename (concat queries-dir language "/textobjects.scm"))
-        )
+        (filename (concat queries-dir language "/textobjects.scm")))
     (with-temp-buffer
       (if (file-exists-p filename)
           (progn
@@ -248,8 +238,7 @@ It might not be on the fist line and so we cannot just get the first line."
 `TOP-LEVEL': should we load optional inherits.  Using caching."
   (let (
          (cache-res (gethash language treesit-jump-queries-cache nil))
-         (query-res nil)
-         )
+         (query-res nil))
     (if (not cache-res)
         (progn
           (setq query-res (treesit-jump--get-query-from-dir language queries-dir top-level))
@@ -262,8 +251,7 @@ It might not be on the fist line and so we cannot just get the first line."
   (let (
          (lang-symbol (intern language))
          (cache-res (gethash major-mode treesit-jump-queries-extra-cache nil))
-         (query-res nil)
-         )
+         (query-res nil))
     (if (not cache-res)
         (progn
           (setq query-res (alist-get major-mode treesit-jump-queries-extra-alist))
@@ -275,8 +263,7 @@ It might not be on the fist line and so we cannot just get the first line."
   "Get captures and process them with the `QUERY-PROCESS-FUNC'."
   (interactive)
   (let (
-        (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist))
-        )
+        (lang-name (alist-get major-mode treesit-jump-major-mode-language-alist)))
 
     (unless (treesit-available-p)
       (error "Treesit is not available... Check and make sure you're using Emacs 29+"))
@@ -291,10 +278,8 @@ It might not be on the fist line and so we cannot just get the first line."
            (queries-dir treesit-jump-queries-dir)
            (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))
            (extra-queries (treesit-jump--get-extra-queries lang-name))
-           (queries-list (append (list query) extra-queries))
-           )
-      (funcall query-process-func queries-list)
-      )))
+           (queries-list (append (list query) extra-queries)))
+      (funcall query-process-func queries-list))))
 
 ;;;###autoload
 (defun treesit-jump-jump ()

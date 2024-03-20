@@ -3,7 +3,7 @@
 ;; Jump around using treesitter
 
 ;; requires Emacs 29+ for treesitter support
-;; requires avy
+;; requires avy and transient
 
 ;;; Commentary:
 
@@ -19,8 +19,9 @@
 ;;; Code:
 
 (require 'treesit)
-(require 'avy)
 (require 'cl-lib)
+(require 'transient)
+(require 'avy nil 'noerror)
 
 ;;;###autoload
 (transient-define-prefix treesit-jump-transient ()
@@ -119,14 +120,14 @@
   (setf (map-elt treesit-jump-major-mode-language-alist
                  major-mode) lang-symbol))
 
-(setq treesit-jump-queries-dir (funcall (lambda ()
+(defvar treesit-jump-queries-dir (funcall (lambda ()
                                           (file-name-as-directory
                                            (concat (file-name-directory
                                                     (or load-file-name buffer-file-name (symbol-file 'treesit-jump-queries-dir)))
                                                    "treesit-queries")))))
 
-(setq treesit-jump-queries-cache (make-hash-table :test 'equal))
-(setq treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
+(defvar treesit-jump-queries-cache (make-hash-table :test 'equal))
+(defvar treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
 
 (defun treesit-jump-queries-clear-cache ()
   "Clear the queries cache."

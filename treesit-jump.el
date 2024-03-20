@@ -5,6 +5,9 @@
 ;; requires Emacs 29+ for treesitter support
 ;; requires avy and transient
 
+;; Package-Version: 0.0.1
+;; Package-Requires: ((emacs "29.1") (cl-lib "0.5") (avy "0.4") (transient "0.5.3"))
+
 ;;; Commentary:
 
 ;; Notes:

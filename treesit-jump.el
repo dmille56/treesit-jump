@@ -27,6 +27,7 @@
 (require 'cl-lib)
 (require 'transient)
 (require 'avy nil 'noerror)
+(require 'map)
 
 ;;;###autoload
 (transient-define-prefix treesit-jump-transient ()

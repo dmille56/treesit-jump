@@ -119,6 +119,8 @@
                           (sh-mode . "bash")
                           (bash-ts-mode . "sh")
                           (shell-script-mode . "bash")
+                          (tsx-mode . "tsx")
+                          (tsx-ts-mode . "tsx")
                           (typescript-mode . "typescript")
                           (typescript-ts-mode . "typescript")
                           (verilog-mode . "verilog")

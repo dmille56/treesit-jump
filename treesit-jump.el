@@ -276,7 +276,10 @@ It might not be on the fist line and so we cannot just get the first line."
 
     (unless (treesit-language-available-p (intern lang-name))
       (error (format "Treesit is not available for language %s" lang-name)))
-
+    
+    (unless (file-directory-p treesit-jump-queries-dir)
+      (error (format "Treesit-queries directory not found at: %s. Make sure your config include the treesit-queries directory if using straight." treesit-jump-queries-dir)))
+    
     (let* (
            (queries-dir treesit-jump-queries-dir)
            (query (treesit-jump--get-query-from-cache-or-dir lang-name queries-dir t))

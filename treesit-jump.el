@@ -25,9 +25,9 @@
 
 (require 'treesit)
 (require 'cl-lib)
-(require 'transient)
 (require 'avy nil 'noerror)
 (require 'map)
+(eval-and-compile (require 'transient)) ;; use eval-and-compile to fix byte-compile issues with transient macro
 
 ;;;###autoload
 (transient-define-prefix treesit-jump-transient ()

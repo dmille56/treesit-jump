@@ -137,6 +137,7 @@
 (defvar treesit-jump-queries-cache (make-hash-table :test 'equal))
 (defvar treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
 
+;;;###autoload
 (defun treesit-jump-queries-clear-cache ()
   "Clear the queries cache."
   (interactive)

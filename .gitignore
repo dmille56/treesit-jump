@@ -3,6 +3,10 @@
 
 # Packaging
 .cask
+.eask
+
+# Dist
+dist/*
 
 # Backup files
 *~

@@ -10,8 +10,10 @@
 
 ;;; Commentary:
 
-;; requires Emacs 29+ for treesitter support
-;; requires avy and transient
+;; Requires Emacs 29+ for treesitter support
+;; Requires avy and transient
+
+;;; Code:
 
 ;; Notes:
 ;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
@@ -21,8 +23,6 @@
 ;; Useful links:
 ;; https://github.com/emacs-mirror/emacs/blob/master/admin/notes/tree-sitter/starter-guide
 ;; https://git.sr.ht/~meow_king/ts-query-highlight
-
-;;; Code:
 
 (require 'treesit)
 (require 'cl-lib)

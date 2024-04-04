@@ -1,5 +1,4 @@
 [[https://github.com/dmille56/treesit-jump/actions/workflows/main.yml/badge.svg]]
-
 * About
 :PROPERTIES:
 :CUSTOM_ID: about

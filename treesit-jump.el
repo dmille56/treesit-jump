@@ -1,16 +1,17 @@
-;;; treesit-jump.el --- Summary
+;;; treesit-jump.el --- Jump around code using treesit -*- lexical-binding: t; -*-
 
-;; Jump around using treesitter
+;; Copyright (C) 2024
 
-;; requires Emacs 29+ for treesitter support
-;; requires avy and transient
-
+;; Author: Donovan Miller
 ;; URL: https://github.com/dmille56/treesit-jump
 ;; Package-Version: 0.0.1
 ;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3"))
-;; Keywords: treesit, tree-sitter, avy, jump, matching
+;; Keywords: treesit, treesitter, avy, jump, matching
 
 ;;; Commentary:
+
+;; requires Emacs 29+ for treesitter support
+;; requires avy and transient
 
 ;; Notes:
 ;; :TODO: test different queries per language and make sure that they can compile and work... Tested: Python, C, C++, Java, C#, JavaScript, TypeScript, Go, Rust
@@ -27,6 +28,8 @@
 (require 'cl-lib)
 (require 'avy nil 'noerror)
 (require 'map)
+
+;;;###autoload
 (eval-and-compile (require 'transient)) ;; use eval-and-compile to fix byte-compile issues with transient macro
 
 ;;;###autoload

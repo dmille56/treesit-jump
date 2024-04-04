@@ -1,4 +1,4 @@
-name: Eask tests
+name: CI
 
 on:
   push:

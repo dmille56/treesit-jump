@@ -5,13 +5,13 @@
 ;; Author: Donovan Miller
 ;; URL: https://github.com/dmille56/treesit-jump
 ;; Package-Version: 0.0.1
-;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3") (gptel "0.8.5"))
-;; Keywords: treesit, treesitter, avy, jump, matching, gptel
+;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3") (gptel "0.8.5") (ufo-catcher "0.0.1"))
+;; Keywords: treesit, treesitter, avy, jump, matching, gptel, ufo-catcher
 
 ;;; Commentary:
 
 ;; Requires Emacs 29+ for treesitter support
-;; Requires avy and transient
+;; Requires ufo-catcher, gptel, avy, and transient
 
 ;;; Code:
 
@@ -29,6 +29,8 @@
 (require 'avy nil 'noerror)
 (require 'gptel)
 (require 'map)
+(require 'treesit)
+(require 'ufo-catcher)
 
 ;;;###autoload
 (eval-and-compile (require 'transient)) ;; use eval-and-compile to fix byte-compile issues with transient macro
@@ -64,7 +66,13 @@
   :group 'treesit-jump)
 
 (defcustom treesit-jump-positions-select-fun #'avy-process
-  "Function used to select matched treesit queries on screen."
+  "Function used to select matched treesit queries on screen by start position."
+  :type 'function
+  :group 'treesit-jump)
+
+(defcustom treesit-jump-positions-region-select-fun #'ufo-catcher-catch
+  "Function used to select matched treesit queries on screen by region."
+;; use ufo-catcher-catch or treesit-jump-call-avy-with-regions
   :type 'function
   :group 'treesit-jump)
 
@@ -172,6 +180,14 @@
   (setq treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
   (message "Treesit-jump cache cleared."))
 
+;; (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start x) selected-pos)) node-list) nil)))
+(defun treesit-jump-call-avy-with-regions (regions)
+"Function to allow calling avy with a list of REGIONS."
+  (let ((selected-pos (avy-process (mapcar #'car regions)))
+        (res 'nil))
+    (if selected-pos (setq res (cl-find-if (lambda (x) (= (car x) selected-pos)) regions)))
+    res))
+
 (defun treesit-jump--queries-filter-default-func (query)
   "Filter out results from the `QUERY' that are in the query filter list."
   (let* (
@@ -191,12 +207,33 @@
          (captures (seq-filter (lambda (x) (funcall treesit-jump-queries-filter-func x)) raw-captures)))
     captures))
 
-(defun treesit-jump--query-select (query-list)
+(defun get-regions-from-captures (captures)
+  (let ((unsorted-regions 'nil))
+    (setq unsorted-regions (mapcar (lambda (capture)
+                                     (let ((start (treesit-node-start (cdr capture)))
+                                           (end (treesit-node-end (cdr capture))))
+                                       (when (and (numberp start) (numberp end))
+                                         (list start end))))
+                                   captures))
+    (message "captures: %s" captures)
+    (message "unsorted-regions: %s" unsorted-regions)
+    unsorted-regions
+  ))
+
+(defun treesit-jump--query-select (query-list &optional use-region)
   "Get captures based upon the `QUERY-LIST' and then return the user selected one."
   (let* (
          (captures (treesit-jump--query-get-captures query-list))
          (positions (sort (mapcar #'treesit-node-start (mapcar #'cdr captures)) #'<))
-         (selected-pos (funcall treesit-jump-positions-select-fun positions)))
+         (unsorted-regions (mapcar (lambda (capture)
+                                    (cons (treesit-node-start (cdr capture))
+                                          (treesit-node-end (cdr capture))))
+                                  captures))
+         ;; (unsorted-regions (get-regions-from-captures captures))
+         (regions (sort unsorted-regions (lambda (a b) (< (car a) (car b)))))
+         (selected-pos (if use-region (funcall treesit-jump-positions-region-select-fun regions) (funcall treesit-jump-positions-select-fun positions))))
+    ;; (message "regions %s" unsorted-regions)
+    (if (and use-region selected-pos) (setq selected-pos (car selected-pos)))
     (if selected-pos (cl-find-if (lambda (x) (= (treesit-node-start (cdr x)) selected-pos)) captures) nil)))
 
 (defun treesit-jump--query-select-go-to (query-list)
@@ -212,7 +249,7 @@
   "Input a `QUERY-LIST' select a capture from it and select it's region."
   (interactive)
   (let* (
-         (selected (treesit-jump--query-select query-list))
+         (selected (treesit-jump--query-select query-list t))
          (start (treesit-node-start (cdr selected)))
          (end (treesit-node-end (cdr selected))))
     (when (and start end)
@@ -223,7 +260,7 @@
   "Input a `QUERY-LIST' select a capture from it and delete it."
   (interactive)
   (let* (
-         (selected (treesit-jump--query-select query-list))
+         (selected (treesit-jump--query-select query-list t))
          (start (treesit-node-start (cdr selected)))
          (end (treesit-node-end (cdr selected))))
     (when (and start end)

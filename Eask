@@ -3,7 +3,7 @@
          "Jump around code using treesit")
 
 (website-url "https://github.com/dmille56/treesit-jump")
-(keywords "treesit" "treesitter" "avy" "jump" "matching" "gptel")
+(keywords "treesit" "treesitter" "avy" "jump" "matching" "gptel" "ufo-catcher")
 
 (package-file "treesit-jump.el")
 
@@ -16,3 +16,4 @@
 (depends-on "transient" "0.5.3")
 (depends-on "avy" "0.4")
 (depends-on "gptel" "0.8.5")
+(depends-on "ufo-catcher" "0.0.1")

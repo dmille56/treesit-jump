@@ -83,6 +83,11 @@
   :group 'treesit-jump
   :type 'face)
 
+(defcustom treesit-jump-code-gpt-code-face font-lock-comment-face
+  "Face to use to seperate gpt reponses."
+  :group 'treesit-jump
+  :type 'face)
+
 (defcustom treesit-jump-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
   :group 'treesit-jump
@@ -340,13 +345,19 @@ Outputs the RESPONSE to a new buffer.  INFO unused for now."
             (insert "----------------------------------------------------------------------------\n")
             (put-text-property start (point) 'face treesit-jump-code-gpt-seperator-face))
           (insert "\n")
+          (insert "Describe the following code:\n\n")
+          (let ((start (point)))
+            (insert (plist-get info :context))
+            (put-text-property start (point) 'face treesit-jump-code-gpt-code-face))
+          (insert "\n\n")
           (insert response)
           (insert "\n")
           (if (> (length (window-list)) 1)
               (other-window 1) (split-window))
           (switch-to-buffer buffer)
           (goto-char (point-max))
-          (recenter -1)))))
+          (recenter -1)
+          (message (plist-get info :context))))))
 
 ;;;###autoload
 (defun treesit-jump-gptel-describe ()
@@ -355,7 +366,7 @@ Outputs the RESPONSE to a new buffer.  INFO unused for now."
   (treesit-jump-get-and-process-captures #'treesit-jump--query-select-visual)
   (if (use-region-p)
       (progn
-        (gptel-request nil :system treesit-jump-code-describe-prompt :callback #'treesit-jump--gptel-callback)
+        (gptel-request nil :system treesit-jump-code-describe-prompt :callback #'treesit-jump--gptel-callback :context (buffer-substring (region-beginning) (region-end)))
         (deactivate-mark))))
 
 (defun treesit-jump-get-parent-nodes-from-point ()

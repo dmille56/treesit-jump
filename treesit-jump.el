@@ -5,8 +5,8 @@
 ;; Author: Donovan Miller
 ;; URL: https://github.com/dmille56/treesit-jump
 ;; Package-Version: 0.0.1
-;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3"))
-;; Keywords: treesit, treesitter, avy, jump, matching
+;; Package-Requires: ((emacs "29.1") (avy "0.4") (transient "0.5.3") (gptel "0.8.5"))
+;; Keywords: treesit, treesitter, avy, jump, matching, gptel
 
 ;;; Commentary:
 
@@ -27,6 +27,7 @@
 (require 'treesit)
 (require 'cl-lib)
 (require 'avy nil 'noerror)
+(require 'gptel)
 (require 'map)
 
 ;;;###autoload
@@ -40,6 +41,7 @@
    ("s" "select" treesit-jump-select)
    ("d" "delete" treesit-jump-delete)
    ("p" "parent jump" treesit-jump-parent-jump)
+   ("g" "gptel describe" treesit-jump-gptel-describe)
    ("c" "clear cache" treesit-jump-queries-clear-cache)])
 
 (defgroup treesit-jump nil
@@ -70,6 +72,21 @@
   "Alist that maps major modes to extra queries to search for."
   :group 'treesit-jump
   :type '(alist :key-type (symbol) :value-type '(repeat string)))
+
+(defcustom treesit-jump-code-describe-prompt "You are an expert programmer.  Describe this code."
+  "Prompt string to use when describing code using treesit-jump."
+  :group 'treesit-jump
+  :type 'string)
+
+(defcustom treesit-jump-code-gpt-seperator-face font-lock-keyword-face
+  "Face to use to seperate gpt reponses."
+  :group 'treesit-jump
+  :type 'face)
+
+(defcustom treesit-jump-code-gpt-code-face font-lock-comment-face
+  "Face to use to seperate gpt reponses."
+  :group 'treesit-jump
+  :type 'face)
 
 (defcustom treesit-jump-major-mode-language-alist nil
   "Alist that maps major modes to tree-sitter language names."
@@ -139,6 +156,13 @@
 
 (defvar treesit-jump-queries-cache (make-hash-table :test 'equal))
 (defvar treesit-jump-queries-extra-cache (make-hash-table :test 'equal))
+
+(defvar treesit-jump--gpt-buffer-name "treesit-jump-gpt-buffer")
+
+(defun treesit-jump--get-or-create-buffer (buffer-name)
+  "Get BUFFER-NAME if it exists, otherwise create it."
+  (or (get-buffer buffer-name)
+      (generate-new-buffer buffer-name)))
 
 ;;;###autoload
 (defun treesit-jump-queries-clear-cache ()
@@ -308,6 +332,42 @@ It might not be on the fist line and so we cannot just get the first line."
   "Select and delete the region of a treesit query for the current major-mode."
   (interactive)
   (treesit-jump-get-and-process-captures #'treesit-jump--query-select-delete))
+
+(defun treesit-jump--gptel-callback (response info)
+  "Callback function from calling gptel-request.
+Outputs the RESPONSE to a new buffer.  INFO unused for now."
+  (if response
+      (let ((buffer (treesit-jump--get-or-create-buffer treesit-jump--gpt-buffer-name)))
+        (with-current-buffer buffer
+          (goto-char (point-max))
+          (insert "\n")
+          (let ((start (point)))
+            (insert "----------------------------------------------------------------------------\n")
+            (put-text-property start (point) 'face treesit-jump-code-gpt-seperator-face))
+          (insert "\n")
+          (insert "Describe the following code:\n\n")
+          (let ((start (point)))
+            (insert (plist-get info :context))
+            (put-text-property start (point) 'face treesit-jump-code-gpt-code-face))
+          (insert "\n\n")
+          (insert response)
+          (insert "\n")
+          (if (> (length (window-list)) 1)
+              (other-window 1) (split-window))
+          (switch-to-buffer buffer)
+          (goto-char (point-max))
+          (recenter -1)
+          (message (plist-get info :context))))))
+
+;;;###autoload
+(defun treesit-jump-gptel-describe ()
+  "Select and select the region of a treesit query for the current major-mode."
+  (interactive)
+  (treesit-jump-get-and-process-captures #'treesit-jump--query-select-visual)
+  (if (use-region-p)
+      (progn
+        (gptel-request nil :system treesit-jump-code-describe-prompt :callback #'treesit-jump--gptel-callback :context (buffer-substring (region-beginning) (region-end)))
+        (deactivate-mark))))
 
 (defun treesit-jump-get-parent-nodes-from-point ()
   "Get a list of the parents of nodes of treesit node at the current point."

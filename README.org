@@ -22,6 +22,8 @@ treesit-jump-delete (used to delete the region of a match)
 treesit-jump-parent-jump (used to jump to a parent of the current node under the cursor)
 [[https://i.imgur.com/2222Jun.gif]]
 
+treesit-jump-gptel-describe (used to describe the selected region using gptel (chatgpt/ollama/etc.))
+
 * Table of Contents
 :PROPERTIES:
 :TOC:      :include all :ignore (this)
@@ -50,7 +52,8 @@ treesit-jump-parent-jump (used to jump to a parent of the current node under the
 2. Installed treesitter grammar (for the language you want to use)
    - You can use [[https://github.com/renzmann/treesit-auto][treesit-auto]] to install grammars and auto load treesitter language modes.
 3. [[https://github.com/abo-abo/avy][Avy]]
-4. [[https://github.com/magit/transient][Transient]] 
+4. [[https://github.com/magit/transient][Transient]]
+5. [[https://github.com/karthink/gptel][Gptel]] 
  
 ** Config
 :PROPERTIES:
@@ -85,6 +88,8 @@ treesit-jump-parent-jump (used to jump to a parent of the current node under the
 #+BEGIN_SRC emacs-lisp
 treesit-jump-queries-clear-cache
 #+END_SRC
+
+- See [[https://github.com/karthink/gptel]] for help configuring gptel queries (in order to configure backend between chatgpt/ollama/etc.)
 
 * Queries
 :PROPERTIES:
